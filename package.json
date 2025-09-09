@@ -13,10 +13,10 @@
     "build": "rollup -c",
     "watch": "rollup -c --watch"
   },
-  "homepage": "https://github.com/Intility/azure-app-redirect-uris",
+  "homepage": "https://github.com/intility/azure-app-redirect-uris",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Intility/azure-app-redirect-uris.git"
+    "url": "https://github.com/intility/azure-app-redirect-uris.git"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
