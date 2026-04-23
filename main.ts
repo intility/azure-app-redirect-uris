@@ -2,10 +2,10 @@ import 'isomorphic-fetch';
 import { DefaultAzureCredential } from '@azure/identity';
 import { Client, GraphError } from '@microsoft/microsoft-graph-client';
 import { TokenCredentialAuthenticationProvider } from '@microsoft/microsoft-graph-client/authProviders/azureTokenCredentials';
-import commander, { Argument } from 'commander';
+import { Command, Argument } from 'commander';
 import { version, description } from './package.json';
 
-const program = new commander.Command();
+const program = new Command();
 
 program
   .name('npx @intility/azure-app-redirect-uris')
@@ -17,10 +17,13 @@ program
       'publicClient',
       'web',
       'spa',
-    ])
+    ]),
   )
   .addArgument(
-    new Argument('<action>', 'The action to perform').choices(['add', 'remove'])
+    new Argument('<action>', 'The action to perform').choices([
+      'add',
+      'remove',
+    ]),
   )
   .argument('<redirectUri>', 'The redirect URI')
   .action(
@@ -28,7 +31,7 @@ program
       appObjectId: string,
       platform: 'publicClient' | 'web' | 'spa',
       action: 'add' | 'remove',
-      redirectUri: 'string'
+      redirectUri: 'string',
     ) => {
       try {
         const credential = new DefaultAzureCredential();
@@ -37,7 +40,7 @@ program
           credential,
           {
             scopes: ['https://graph.microsoft.com/.default'],
-          }
+          },
         );
         const client = Client.initWithMiddleware({ authProvider });
 
@@ -51,7 +54,7 @@ program
         if (action === 'add') {
           if (redirectUris.has(redirectUri)) {
             console.log(
-              `Redirect URI ${redirectUri} is already registered, doing nothing.`
+              `Redirect URI ${redirectUri} is already registered, doing nothing.`,
             );
             return;
           }
@@ -63,7 +66,7 @@ program
         if (action === 'remove') {
           if (!redirectUris.has(redirectUri)) {
             console.log(
-              `Redirect URI ${redirectUri} not registered, doing nothing.`
+              `Redirect URI ${redirectUri} not registered, doing nothing.`,
             );
             return;
           }
@@ -87,7 +90,7 @@ program
 
         throw e;
       }
-    }
+    },
   );
 
 program.parse();
