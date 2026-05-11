@@ -25,13 +25,13 @@ program
       'remove',
     ]),
   )
-  .argument('<redirectUri>', 'The redirect URI')
+  .argument('<redirectUris...>', 'The redirect URIs')
   .action(
     async (
       appObjectId: string,
       platform: 'publicClient' | 'web' | 'spa',
       action: 'add' | 'remove',
-      redirectUri: 'string',
+      redirectUris: Array<string>,
     ) => {
       try {
         const credential = new DefaultAzureCredential();
@@ -46,42 +46,45 @@ program
 
         const app = await client.api(`/applications/${appObjectId}`).get();
 
-        const redirectUris = new Set<string>(app[platform].redirectUris);
+        const appRedirectUris = new Set<string>(app[platform].redirectUris);
+        const uniqueUris = new Set(redirectUris);
 
-        // store message in a variable to be able to print it after success
-        let message: string | undefined;
+        // store messages in an array to be able to print it after success
+        const messages: Array<string> = [];
 
-        if (action === 'add') {
-          if (redirectUris.has(redirectUri)) {
-            console.log(
-              `Redirect URI ${redirectUri} is already registered, doing nothing.`,
-            );
-            return;
+        for (const redirectUri of uniqueUris) {
+          if (action === 'add') {
+            if (appRedirectUris.has(redirectUri)) {
+              console.log(
+                `Redirect URI ${redirectUri} is already registered, doing nothing.`,
+              );
+              continue;
+            }
+
+            messages.push(`Redirect URI ${redirectUri} successfully added.`);
+            appRedirectUris.add(redirectUri);
           }
 
-          message = `Redirect URI ${redirectUri} successfully added.`;
-          redirectUris.add(redirectUri);
-        }
+          if (action === 'remove') {
+            if (!appRedirectUris.has(redirectUri)) {
+              console.log(
+                `Redirect URI ${redirectUri} not registered, doing nothing.`,
+              );
+              continue;
+            }
 
-        if (action === 'remove') {
-          if (!redirectUris.has(redirectUri)) {
-            console.log(
-              `Redirect URI ${redirectUri} not registered, doing nothing.`,
-            );
-            return;
+            messages.push(`Redirect URI ${redirectUri} successfully removed.`);
+            appRedirectUris.delete(redirectUri);
           }
-
-          message = `Redirect URI ${redirectUri} successfully removed.`;
-          redirectUris.delete(redirectUri);
         }
+
+        if (messages.length === 0) return;
 
         await client.api(`/applications/${appObjectId}`).patch({
-          [platform]: { ...app[platform], redirectUris: [...redirectUris] },
+          [platform]: { ...app[platform], redirectUris: [...appRedirectUris] },
         });
 
-        if (message) {
-          console.log(message);
-        }
+        messages.forEach((message) => console.log(message));
       } catch (e) {
         if (e instanceof GraphError) {
           console.error(e.message);

@@ -21,7 +21,7 @@
 ## Usage
 
 ```
-Usage: npx @intility/azure-app-redirect-uris [options] <appObjectId> <platform> <action> <redirectUri>
+Usage: npx @intility/azure-app-redirect-uris [options] <appObjectId> <platform> <action> <redirectUris...>
 
 CLI to add and remove redirect uris from an Azure App Registration.
 
@@ -29,7 +29,7 @@ Arguments:
   appObjectId    The object ID of the app registration
   platform       Redirect URI platform (choices: "publicClient", "web", "spa")
   action         The action to perform (choices: "add", "remove")
-  redirectUri    The redirect URI
+  redirectUris   The redirect URIs
 
 Options:
   -V, --version  output the version number
