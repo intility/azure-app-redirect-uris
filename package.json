@@ -1,6 +1,6 @@
 {
   "name": "@intility/azure-app-redirect-uris",
-  "version": "1.1.4",
+  "version": "1.2.0",
   "description": "CLI to add and remove redirect uris from an Azure App Registration.",
   "main": "./bin/cli.js",
   "bin": {
