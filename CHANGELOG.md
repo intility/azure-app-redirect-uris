@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/intility/azure-app-redirect-uris/compare/v1.2.0...v1.2.1) (2026-05-22)
+
+
+### Bug Fixes
+
+* bump @azure/msal-node ([#25](https://github.com/intility/azure-app-redirect-uris/issues/25)) ([f916f0a](https://github.com/intility/azure-app-redirect-uris/commit/f916f0a562921aca815b87fb3430d78e1405e2c7))
+
 ## [1.2.0](https://github.com/intility/azure-app-redirect-uris/compare/v1.1.4...v1.2.0) (2026-05-11)
 
 
