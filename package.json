@@ -52,7 +52,7 @@
   "dependencies": {
     "@azure/identity": "^4.13.1",
     "@microsoft/microsoft-graph-client": "^3.0.7",
-    "commander": "^14.0.3",
+    "commander": "^15.0.0",
     "isomorphic-fetch": "^3.0.0"
   }
 }
