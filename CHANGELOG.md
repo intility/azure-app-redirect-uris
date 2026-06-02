@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.2](https://github.com/intility/azure-app-redirect-uris/compare/v1.2.1...v1.2.2) (2026-06-02)
+
+
+### Bug Fixes
+
+* bump commander from 14.0.3 to 15.0.0 ([#28](https://github.com/intility/azure-app-redirect-uris/issues/28)) ([a7ce890](https://github.com/intility/azure-app-redirect-uris/commit/a7ce890bf78003cc0e44c637cd560d1ff80223ad))
+* bump the frontend group with 10 updates ([#27](https://github.com/intility/azure-app-redirect-uris/issues/27)) ([07ce8c2](https://github.com/intility/azure-app-redirect-uris/commit/07ce8c25f33acc96db5f0ca58cd37a5ecb81211f))
+
 ## [1.2.1](https://github.com/intility/azure-app-redirect-uris/compare/v1.2.0...v1.2.1) (2026-05-22)
 
 
