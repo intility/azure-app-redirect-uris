@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.2.3](https://github.com/intility/azure-app-redirect-uris/compare/v1.2.2...v1.2.3) (2026-08-12)
+
+
+### Bug Fixes
+
+* bump actions/checkout from 6.0.2 to 7.0.0 ([#31](https://github.com/intility/azure-app-redirect-uris/issues/31)) ([bcda184](https://github.com/intility/azure-app-redirect-uris/commit/bcda184fe44331877e43c729839ce32b24c041ba))
+* bump actions/checkout from 7.0.0 to 7.0.1 ([#33](https://github.com/intility/azure-app-redirect-uris/issues/33)) ([2dffc47](https://github.com/intility/azure-app-redirect-uris/commit/2dffc4760cb65008dfcc6f81800e2b25d68b412b))
+* bump actions/setup-node from 6.4.0 to 7.0.0 ([#34](https://github.com/intility/azure-app-redirect-uris/issues/34)) ([b24baac](https://github.com/intility/azure-app-redirect-uris/commit/b24baac81c52303b0d010da9cfced95734e365e1))
+
 ## [1.2.2](https://github.com/intility/azure-app-redirect-uris/compare/v1.2.1...v1.2.2) (2026-06-02)
 
 
