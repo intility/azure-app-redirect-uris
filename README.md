@@ -42,7 +42,7 @@ If authenticating using a Service Principal (clientId & clientSecret/clientCerti
 
 ## Granting the CI/CD agent ownership of your app registration
 
-For the review-branch workflow to manage redirect URIs on your app registration (e.g. your Swagger app), your department's **CI/CD agent** must be an *owner* of that app registration. The agent uses the `Application.ReadWrite.OwnedBy` Graph permission, which only allows it to modify app registrations it owns.
+For the review-branch workflow to manage redirect URIs on your app registration (e.g. your Swagger app), your department's **CI/CD agent** must be an _owner_ of that app registration. The agent uses the `Application.ReadWrite.OwnedBy` Graph permission, which only allows it to modify app registrations it owns.
 
 > ⚠️ The Entra ID portal only supports adding **users** as owners — a service
 > principal cannot be added through the UI. You must do it via the Microsoft
@@ -50,8 +50,9 @@ For the review-branch workflow to manage redirect URIs on your app registration 
 > of the app registration, or have an admin role).
 
 Run the following, replacing:
+
 - `<YOUR-APP-OBJECT-ID>` — the **Object ID** of your app registration, found on
-  the app's *Overview* page in Entra ID (the Object ID, **not** the
+  the app's _Overview_ page in Entra ID (the Object ID, **not** the
   Application/Client ID)
 - `<CICD-AGENT-SP-OBJECT-ID>` — the **service principal** (enterprise
   application) Object ID of your CI/CD agent. Note: this must be the service
@@ -59,12 +60,13 @@ Run the following, replacing:
   requires the service principal here.
 
 ```bash
-az rest --method POST \ 
+az rest --method POST \
   --uri "https://graph.microsoft.com/v1.0/applications/<YOUR-APP-OBJECT-ID>/owners/\$ref" \
   --headers "Content-Type=application/json" \
   --body '{"@odata.id": "https://graph.microsoft.com/v1.0/directoryObjects/<CICD-AGENT-SP-OBJECT-ID>"}'
-  ``` 
-A successful call returns no output, and the agent will appear under the app registration's *Owners* in the portal.
+```
+
+A successful call returns no output, and the agent will appear under the app registration's _Owners_ in the portal.
 
 ### As a GitLab job
 
