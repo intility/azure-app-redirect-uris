@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import 'isomorphic-fetch';
 import { DefaultAzureCredential } from '@azure/identity';
 import { Client, GraphError } from '@microsoft/microsoft-graph-client';

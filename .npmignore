@@ -1,12 +1,10 @@
 .github
 .history
-.babelrc
 .vscode
 .editorconfig
-.eslintignore
-.eslintrc.js
-.prettierrc.js
+.oxlintrc.json
+.oxfmtrc.json
 CHANGELOG.md
 main.ts
-rollup.config.js
+tsdown.config.mts
 tsconfig.json
