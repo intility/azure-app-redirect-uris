@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { setTimeout } from 'node:timers/promises';
 import { DefaultAzureCredential } from '@azure/identity';
 import { Command, Argument } from 'commander';
 import { version, description } from './package.json';
@@ -8,18 +9,37 @@ type Application = Record<Platform, { redirectUris: Array<string> }>;
 
 class GraphError extends Error {}
 
+// Statuses Graph uses for throttling and transient failures.
+const RETRYABLE_STATUSES = new Set([429, 503, 504]);
+const MAX_RETRIES = 3;
+const MAX_RETRY_DELAY_SECONDS = 60;
+
 async function graphRequest<T>(
   token: string,
   path: string,
   init: RequestInit = {},
 ): Promise<T> {
-  const response = await fetch(`https://graph.microsoft.com/v1.0${path}`, {
-    ...init,
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-  });
+  const headers = new Headers(init.headers);
+  headers.set('Authorization', `Bearer ${token}`);
+  headers.set('Content-Type', 'application/json');
+
+  let response: Response;
+  for (let attempt = 0; ; attempt++) {
+    response = await fetch(`https://graph.microsoft.com/v1.0${path}`, {
+      ...init,
+      headers,
+    });
+
+    if (!RETRYABLE_STATUSES.has(response.status) || attempt === MAX_RETRIES) {
+      break;
+    }
+
+    // Retry-After is in seconds; fall back to exponential backoff (1s, 2s, 4s).
+    const retryAfter = Number(response.headers.get('Retry-After'));
+    const delaySeconds = retryAfter > 0 ? retryAfter : 2 ** attempt;
+    await response.body?.cancel();
+    await setTimeout(Math.min(delaySeconds, MAX_RETRY_DELAY_SECONDS) * 1000);
+  }
 
   if (!response.ok) {
     const body = (await response.json().catch(() => undefined)) as
@@ -122,6 +142,7 @@ program
       } catch (e) {
         if (e instanceof GraphError) {
           console.error(e.message);
+          process.exitCode = 1;
           return;
         }
 
@@ -130,4 +151,4 @@ program
     },
   );
 
-program.parse();
+await program.parseAsync();
