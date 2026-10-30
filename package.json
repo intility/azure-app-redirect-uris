@@ -44,8 +44,7 @@
   "dependencies": {
     "@azure/identity": "^4.13.1",
     "@microsoft/microsoft-graph-client": "^3.0.7",
-    "commander": "^15.0.0",
-    "isomorphic-fetch": "^3.0.0"
+    "commander": "^15.0.0"
   },
   "engines": {
     "node": ">=22.12.0"

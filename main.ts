@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-import 'isomorphic-fetch';
 import { DefaultAzureCredential } from '@azure/identity';
 import { Client, GraphError } from '@microsoft/microsoft-graph-client';
 // The package has no `exports` map, so ESM needs the full file path here.
