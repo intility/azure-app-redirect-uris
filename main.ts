@@ -1,10 +1,38 @@
 #!/usr/bin/env node
 import { DefaultAzureCredential } from '@azure/identity';
-import { Client, GraphError } from '@microsoft/microsoft-graph-client';
-// The package has no `exports` map, so ESM needs the full file path here.
-import { TokenCredentialAuthenticationProvider } from '@microsoft/microsoft-graph-client/authProviders/azureTokenCredentials/index.js';
 import { Command, Argument } from 'commander';
 import { version, description } from './package.json';
+
+type Platform = 'publicClient' | 'web' | 'spa';
+type Application = Record<Platform, { redirectUris: Array<string> }>;
+
+class GraphError extends Error {}
+
+async function graphRequest<T>(
+  token: string,
+  path: string,
+  init: RequestInit = {},
+): Promise<T> {
+  const response = await fetch(`https://graph.microsoft.com/v1.0${path}`, {
+    ...init,
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    const body = (await response.json().catch(() => undefined)) as
+      | { error?: { message?: string } }
+      | undefined;
+    throw new GraphError(
+      body?.error?.message ?? `${response.status} ${response.statusText}`,
+    );
+  }
+
+  // PATCH returns 204 No Content.
+  return (response.status === 204 ? undefined : await response.json()) as T;
+}
 
 const program = new Command();
 
@@ -30,22 +58,21 @@ program
   .action(
     async (
       appObjectId: string,
-      platform: 'publicClient' | 'web' | 'spa',
+      platform: Platform,
       action: 'add' | 'remove',
       redirectUris: Array<string>,
     ) => {
       try {
         const credential = new DefaultAzureCredential();
-
-        const authProvider = new TokenCredentialAuthenticationProvider(
-          credential,
-          {
-            scopes: ['https://graph.microsoft.com/.default'],
-          },
+        const accessToken = await credential.getToken(
+          'https://graph.microsoft.com/.default',
         );
-        const client = Client.initWithMiddleware({ authProvider });
+        if (!accessToken) {
+          throw new Error('Failed to get an access token for Microsoft Graph.');
+        }
 
-        const app = await client.api(`/applications/${appObjectId}`).get();
+        const appPath = `/applications/${encodeURIComponent(appObjectId)}`;
+        const app = await graphRequest<Application>(accessToken.token, appPath);
 
         const appRedirectUris = new Set<string>(app[platform].redirectUris);
         const uniqueUris = new Set(redirectUris);
@@ -81,8 +108,14 @@ program
 
         if (messages.length === 0) return;
 
-        await client.api(`/applications/${appObjectId}`).patch({
-          [platform]: { ...app[platform], redirectUris: [...appRedirectUris] },
+        await graphRequest(accessToken.token, appPath, {
+          method: 'PATCH',
+          body: JSON.stringify({
+            [platform]: {
+              ...app[platform],
+              redirectUris: [...appRedirectUris],
+            },
+          }),
         });
 
         messages.forEach((message) => console.log(message));
