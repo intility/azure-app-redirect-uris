@@ -2,7 +2,8 @@
 import 'isomorphic-fetch';
 import { DefaultAzureCredential } from '@azure/identity';
 import { Client, GraphError } from '@microsoft/microsoft-graph-client';
-import { TokenCredentialAuthenticationProvider } from '@microsoft/microsoft-graph-client/authProviders/azureTokenCredentials';
+// The package has no `exports` map, so ESM needs the full file path here.
+import { TokenCredentialAuthenticationProvider } from '@microsoft/microsoft-graph-client/authProviders/azureTokenCredentials/index.js';
 import { Command, Argument } from 'commander';
 import { version, description } from './package.json';
 

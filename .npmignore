@@ -6,5 +6,5 @@
 .oxfmtrc.json
 CHANGELOG.md
 main.ts
-tsdown.config.mts
+tsdown.config.ts
 tsconfig.json
